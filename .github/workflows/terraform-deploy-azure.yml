@@ -11,7 +11,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: azure-iac-demo  # Keep this pointing to azure-iac-demo folder
+        working-directory: azure-iac  # ✅ Corrected folder name
 
     steps:
       - name: Checkout code
