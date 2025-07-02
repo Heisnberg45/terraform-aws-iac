@@ -2,11 +2,7 @@ name: Terraform Azure CI/CD
 
 on:
   push:
-    paths:
-      - 'azure-iac-demo/**'
   pull_request:
-    paths:
-      - 'azure-iac-demo/**'
 
 jobs:
   terraform:
@@ -15,7 +11,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: azure-iac-demo
+        working-directory: azure-iac-demo  # Keep this pointing to azure-iac-demo folder
 
     steps:
       - name: Checkout code
