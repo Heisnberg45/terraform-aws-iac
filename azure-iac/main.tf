@@ -20,9 +20,19 @@ provider "azurerm" {
   features {}
 }
 
+variable "admin_ssh_public_key" {
+  description = "SSH public key to access the VM"
+  type        = string
+}
+
 resource "azurerm_resource_group" "iac_demo" {
   name     = "rg-iac-demo"
   location = "westeurope"
+}
+
+resource "random_integer" "suffix" {
+  min = 10000
+  max = 99999
 }
 
 resource "azurerm_storage_account" "demo" {
@@ -34,24 +44,6 @@ resource "azurerm_storage_account" "demo" {
 
   tags = {
     Environment = "Dev"
-  }
-}
-
-resource "random_integer" "suffix" {
-  min = 10000
-  max = 99999
-}
-
-resource "azurerm_network_interface" "vm_nic" {
-  name                = "vm-nic"
-  location            = azurerm_resource_group.iac_demo.location
-  resource_group_name = azurerm_resource_group.iac_demo.name
-
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = azurerm_subnet.vm_subnet.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.vm_public_ip.id
   }
 }
 
@@ -94,24 +86,35 @@ resource "azurerm_network_security_group" "vm_nsg" {
   }
 }
 
+resource "azurerm_network_interface" "vm_nic" {
+  name                = "vm-nic"
+  location            = azurerm_resource_group.iac_demo.location
+  resource_group_name = azurerm_resource_group.iac_demo.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.vm_subnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.vm_public_ip.id
+  }
+}
+
 resource "azurerm_network_interface_security_group_association" "vm_nic_nsg" {
   network_interface_id      = azurerm_network_interface.vm_nic.id
   network_security_group_id = azurerm_network_security_group.vm_nsg.id
 }
 
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "vm-iac-demo"
-  resource_group_name = azurerm_resource_group.iac_demo.name
-  location            = azurerm_resource_group.iac_demo.location
-  size                = "Standard_B1s"
-  admin_username      = "azureuser"
-  network_interface_ids = [
-    azurerm_network_interface.vm_nic.id,
-  ]
+  name                  = "vm-iac-demo"
+  resource_group_name   = azurerm_resource_group.iac_demo.name
+  location              = azurerm_resource_group.iac_demo.location
+  size                  = "Standard_B1s"
+  admin_username        = "azureuser"
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
 
   admin_ssh_key {
     username   = "azureuser"
-    public_key = file("C:/Users/lalit/.ssh/id_rsa.pub")
+    public_key = var.admin_ssh_public_key
   }
 
   os_disk {
@@ -125,5 +128,4 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "20_04-lts"
     version   = "latest"
   }
-
 }

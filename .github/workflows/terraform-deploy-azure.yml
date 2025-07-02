@@ -11,7 +11,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: azure-iac  # ✅ Corrected folder name
+        working-directory: azure-iac
 
     steps:
       - name: Checkout code
@@ -32,11 +32,11 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan -var "admin_ssh_public_key=${{ secrets.AZURE_SSH_PUBLIC_KEY }}"
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -var "admin_ssh_public_key=${{ secrets.AZURE_SSH_PUBLIC_KEY }}"
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
