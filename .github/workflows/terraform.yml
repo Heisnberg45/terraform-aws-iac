@@ -1,12 +1,8 @@
-name: Terraform CI/CD
+name: Terraform AWS CI/CD
 
 on:
   push:
-    paths:
-      - 'aws-iac/**'
   pull_request:
-    paths:
-      - 'aws-iac/**'
 
 jobs:
   terraform:
@@ -15,7 +11,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: aws-iac   # 🟢 IMPORTANT: point to the aws-iac folder
+        working-directory: aws-iac  # Keep this pointing to aws-iac folder
 
     steps:
       - name: Checkout code
