@@ -1,0 +1,36 @@
+# Ignore Terraform state files
+*.tfstate
+*.tfstate.*
+*.backup
+
+# Ignore crash logs
+crash.log
+
+# Ignore .terraform directories
+.terraform/
+
+# Ignore terraform variable files
+*.tfvars
+*.tfvars.json
+
+# Ignore sensitive override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore Terraform lock files
+.terraform.lock.hcl
+
+# Ignore any executables and large files
+*.exe
+
+# Ignore sensitive files
+Amruth.docx
+aws-iac-key-pair.pem
+details.txt
+login-details.txt
+terraform-ci_accessKeys.csv
+terraform-ci_credentials.csv
+terraform-user_accessKeys.csv
+terraform-user_credentials.csv
